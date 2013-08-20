@@ -6,35 +6,44 @@ load('lib/WindowManager');
 load('lib/prefs');
 
 var domain = 'extensions.uitextoverrider@clear-code.com.';
-var selectorPattern = /\.selector$/;
+
+function overrideUIText(aWindow, aBaseKey, aDelayed) {
+  var selector = prefs.getPref(aBaseKey);
+  if (!selector)
+    return;
+
+  if (prefs.getPref(aBaseKey + '.delayed') && !aDelayed) {
+    aWindow.setTimeout(function() {
+      overrideUIText(aWindow, aBaseKey, true);
+    }, 100);
+    return;
+  }
+
+  try {
+    var targets = aWindow.document.querySelectorAll(selector);
+    if (!targets.length)
+      return;
+
+    var keys = prefs.getChildren(aBaseKey + '.');
+    keys.forEach(function(aKey) {
+      var attribute = aKey.replace(aBaseKey + '.', '');
+      if (attribute == 'delayed')
+        return;
+
+      var value = prefs.getPref(aKey);
+      Array.forEach(targets, function(aTarget) {
+        aTarget.setAttribute(attribute, value);
+      });
+    });
+  } catch(error) {
+    Cu.reportError(error);
+  }
+}
 
 function handleWindow(aWindow)
 {
   prefs.getChildren(domain).forEach(function(aBaseKey) {
-    var selector = prefs.getPref(aBaseKey);
-    if (!selector)
-      return;
-
-    aBaseKey += '.';
-    try {
-      var targets = aWindow.document.querySelectorAll(selector);
-      if (!targets.length)
-        return;
-
-      var keys = prefs.getChildren(aBaseKey);
-      keys.forEach(function(aKey) {
-        if (selectorPattern.test(aKey))
-          return;
-
-        var attribute = aKey.replace(aBaseKey, '');
-        var value = prefs.getPref(aKey);
-        Array.forEach(targets, function(aTarget) {
-          aTarget.setAttribute(attribute, value);
-        });
-      });
-    } catch(error) {
-      Cu.reportError(error);
-    }
+    overrideUIText(aWindow, aBaseKey);
   });
 }
 
@@ -46,7 +55,8 @@ function shutdown()
   WindowManager.removeHandler(handleWindow);
 
   domain = undefined;
-  selectorPattern = undefined;
+  handleWindow = undefined;
+  overrideUIText = undefined;
 
   WindowManager = undefined;
   prefs = undefined;

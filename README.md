@@ -14,6 +14,9 @@ If you define some preferences like following, this addon automatically apply ne
     user_pref("extensions.uitextoverrider@clear-code.com.another.label",       "new label2");
     user_pref("extensions.uitextoverrider@clear-code.com.another.tooltiptext", "new tooltiptext2");
     user_pref("extensions.uitextoverrider@clear-code.com.another.accesskey",   "accesskey2");
+    // If the item is automatically inserted by another addon,
+    // then you should set this "delayed" flag to override labels certainly.
+    user_pref("extensions.uitextoverrider@clear-code.com.another.delayed",     true);
     
     ...
 
