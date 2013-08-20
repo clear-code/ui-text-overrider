@@ -12,8 +12,8 @@
                    em:bootstrap="true"
                    em:type="2">
 
-    <em:updateURL></em:updateURL>
-    <em:updateKey></em:updateKey>
+    <!--em:updateURL></em:updateURL-->
+    <!--em:updateKey></em:updateKey-->
 
     <em:localized>
       <RDF:Description em:locale="en-US"
