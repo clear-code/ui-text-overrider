@@ -20,6 +20,11 @@ If you define some preferences like following, this addon automatically apply ne
     
     ...
 
+For example, following preferences will change the label of "Firefox" button to "Iceweasel".
+
+    user_pref("extensions.uitextoverrider@clear-code.com.appbutton",       "#appmenu-button");
+    user_pref("extensions.uitextoverrider@clear-code.com.appbutton.label", "Iceweasel");
+
 The value of the base key is always a CSS selector string to find the target element. You can specify any attribute name and value as child keys.
 
 Note: original attribute and values won't be restored even if the addon is disabled or uninstalled.
