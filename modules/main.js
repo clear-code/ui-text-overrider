@@ -13,9 +13,12 @@ function overrideUIText(aWindow, aBaseKey, aDelayed) {
     return;
 
   if (prefs.getPref(aBaseKey + '.delayed') && !aDelayed) {
-    aWindow.setTimeout(function() {
-      overrideUIText(aWindow, aBaseKey, true);
-    }, 100);
+    aWindow.addEventListener('load', function onLoad(aEvent) {
+      aWindow.removeEventListener('load', onLoad, false);
+      aWindow.setTimeout(function() {
+        overrideUIText(aWindow, aBaseKey, true);
+      }, 100);
+    }, false);
     return;
   }
 
