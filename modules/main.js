@@ -7,18 +7,34 @@ load('lib/prefs');
 
 var domain = 'extensions.uitextoverrider@clear-code.com.';
 
-function overrideUIText(aWindow, aBaseKey, aDelayed) {
+var STATE_HANDLED      = 0;
+var STATE_ONLOAD_FIRED = 1;
+var STATE_DELAYED      = 2;
+
+function overrideUIText(aWindow, aBaseKey, aState) {
   var selector = prefs.getPref(aBaseKey);
   if (!selector)
     return;
 
-  if (prefs.getPref(aBaseKey + '.delayed') && !aDelayed) {
+  if (aWindow.location.href == 'about:blank' && aState == STATE_HANDLED) {
     aWindow.addEventListener('load', function onLoad(aEvent) {
       aWindow.removeEventListener('load', onLoad, false);
-      aWindow.setTimeout(function() {
-        overrideUIText(aWindow, aBaseKey, true);
-      }, 100);
+      overrideUIText(aWindow, aBaseKey, STATE_ONLOAD_FIRED);
     }, false);
+    return;
+  }
+
+  if (prefs.getPref(aBaseKey + '.delayed') && aState != STATE_DELAYED) {
+    if (aState == STATE_HANDLED) {
+      aWindow.addEventListener('load', function onLoad(aEvent) {
+        aWindow.removeEventListener('load', onLoad, false);
+        aWindow.setTimeout(function() {
+          overrideUIText(aWindow, aBaseKey, STATE_DELAYED);
+        }, 100);
+      }, false);
+    } else {
+      overrideUIText(aWindow, aBaseKey, STATE_DELAYED);
+    }
     return;
   }
 
@@ -46,7 +62,7 @@ function overrideUIText(aWindow, aBaseKey, aDelayed) {
 function handleWindow(aWindow)
 {
   prefs.getChildren(domain).forEach(function(aBaseKey) {
-    overrideUIText(aWindow, aBaseKey);
+    overrideUIText(aWindow, aBaseKey, STATE_HANDLED);
   });
 }
 
