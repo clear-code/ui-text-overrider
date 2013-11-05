@@ -19,7 +19,10 @@ function overrideUIText(aWindow, aBaseKey, aState) {
   if (aWindow.location.href == 'about:blank' && aState == STATE_HANDLED) {
     aWindow.addEventListener('load', function onLoad(aEvent) {
       aWindow.removeEventListener('load', onLoad, false);
-      overrideUIText(aWindow, aBaseKey, STATE_ONLOAD_FIRED);
+      aWindow.addEventListener('MozAfterPaint', function onMozAfterPaint(aEvent) {
+        aWindow.removeEventListener('MozAfterPaint', onMozAfterPaint, false);
+        overrideUIText(aWindow, aBaseKey, STATE_ONLOAD_FIRED);
+      }, false);
     }, false);
     return;
   }
@@ -28,18 +31,24 @@ function overrideUIText(aWindow, aBaseKey, aState) {
     if (aState == STATE_HANDLED) {
       aWindow.addEventListener('load', function onLoad(aEvent) {
         aWindow.removeEventListener('load', onLoad, false);
-        aWindow.setTimeout(function() {
-          overrideUIText(aWindow, aBaseKey, STATE_DELAYED);
-        }, 100);
+        aWindow.addEventListener('MozAfterPaint', function onMozAfterPaint(aEvent) {
+          aWindow.removeEventListener('MozAfterPaint', onMozAfterPaint, false);
+          aWindow.setTimeout(function() {
+            overrideUIText(aWindow, aBaseKey, STATE_DELAYED);
+          }, 100);
+        }, false);
       }, false);
     } else {
-      overrideUIText(aWindow, aBaseKey, STATE_DELAYED);
+      aWindow.setTimeout(function() {
+        overrideUIText(aWindow, aBaseKey, STATE_DELAYED);
+      }, 100);
     }
     return;
   }
 
   try {
     var targets = aWindow.document.querySelectorAll(selector);
+    // Application.console.log(aState+' / '+selector+' => '+targets.length);
     if (!targets.length)
       return;
 
