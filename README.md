@@ -27,4 +27,4 @@ For example, following preferences will change the label of "Firefox" button to 
 
 The value of the base key is always a CSS selector string to find the target element. You can specify any attribute name and value as child keys.
 
-Note: original attribute and values won't be restored even if the addon is disabled or uninstalled.
+Note: original attribute and values won't be restored even if the addon is disabled or uninstalled, until you restart Firefox.
