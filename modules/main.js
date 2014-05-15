@@ -16,6 +16,12 @@ function overrideUIText(aWindow, aBaseKey, aState) {
   if (!selector)
     return;
 
+  if (aWindow.document.documentElement.localName == 'prefwindow') {
+    aWindow.addEventListener('paneload', function onLoad(aEvent) {
+      overrideUIText(aWindow, aBaseKey, STATE_DELAYED);
+    }, false);
+  }
+
   if (aWindow.location.href == 'about:blank' && aState == STATE_HANDLED) {
     aWindow.addEventListener('load', function onLoad(aEvent) {
       aWindow.removeEventListener('load', onLoad, false);
