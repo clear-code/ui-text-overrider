@@ -10,7 +10,8 @@
                    em:homepageURL="http://www.clear-code.com/"
                    em:description="Provides ability to override UI elements' label, tooltip text, etc."
                    em:bootstrap="true"
-                   em:type="2">
+                   em:type="2"
+                   em:multiprocessCompatible="true">
 
     <!--em:updateURL></em:updateURL-->
     <!--em:updateKey></em:updateKey-->
