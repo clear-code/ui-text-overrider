@@ -55,10 +55,14 @@ function overrideUIText(aWindow, aBaseKey, aState) {
   try {
     var targets = aWindow.document.querySelectorAll(selector);
     // Application.console.log(aState+' / '+selector+' => '+targets.length);
-    if (!targets.length)
+    if (!targets.length) {
+      Cu.reportError(new Error('[uitextoverrider] no target found: ' + selector +
+                                 ' (' + aWindow.location.href +  ')'));
       return;
+    }
 
     var keys = prefs.getChildren(aBaseKey + '.');
+    var attributes = [];
     keys.forEach(function(aKey) {
       var attribute = aKey.replace(aBaseKey + '.', '');
       if (attribute == 'delayed')
@@ -67,8 +71,12 @@ function overrideUIText(aWindow, aBaseKey, aState) {
       var value = prefs.getPref(aKey);
       Array.forEach(targets, function(aTarget) {
         aTarget.setAttribute(attribute, value);
+        attributes.push(attribute + '=' + value);
       });
     });
+    Application.console.log('[uitextoverrider] ' + targets.length + ' targets found: ' + selector +
+                              ' => ' + attributes.join(', ') +
+                              ' (' + aWindow.location.href +  ')');
   } catch(error) {
     Cu.reportError(error);
   }
