@@ -11,6 +11,7 @@ How to Test
 ### Expected result
 
 * Show red border arround ≡(#PanelUI-menu-button)
+![uitext-overrider-expected-result-fx](uitext-overrider-expected-result-fx.jpg)
 
 ## Thunderbird
 
@@ -22,3 +23,4 @@ How to Test
 ### Expected result
 
 * Show red border arround ≡(#button-appmenu)
+![uitext-overrider-expected-result-tb](uitext-overrider-expected-result-tb.jpg)
