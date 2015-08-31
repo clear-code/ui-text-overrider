@@ -1,10 +1,11 @@
 /**
  * @fileOverview Loader module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      11
+ * @contributor  Infocatcher
+ * @version      13
  *
  * @license
- *   The MIT License, Copyright (c) 2010-2014 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2010-2015 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -19,14 +20,26 @@ function toPropertyDescriptors(aProperties) {
 }
 
 function inherit(aParent, aExtraProperties) {
-	if (!Object.create) {
+	var global;
+	if (Components.utils.getGlobalForObject)
+		global = Components.utils.getGlobalForObject(aParent);
+	else
+		global = aParent.valueOf.call();
+	global = global || this;
+
+	var ObjectClass = global.Object || Object;
+
+	if (!ObjectClass.create) {
+		// This section is for very old versions of Firefox.
+		// Never been executed on modern versions.
+		aExtraProperties = aExtraProperties || new ObjectClass;
 		aExtraProperties.__proto__ = aParent;
 		return aExtraProperties;
 	}
 	if (aExtraProperties)
-		return Object.create(aParent, toPropertyDescriptors(aExtraProperties));
+		return ObjectClass.create(aParent, toPropertyDescriptors(aExtraProperties));
 	else
-		return Object.create(aParent);
+		return ObjectClass.create(aParent);
 }
 
 /** You can customize shared properties for loaded scripts. */
@@ -197,33 +210,6 @@ function exists(aPath, aBaseURI)
 	}
 }
 
-function doAndWait(aAsyncTask)
-{
-	const Cc = Components.classes;
-	const Ci = Components.interfaces;
-
-	var done = false;
-	var returnedValue = void(0);
-	var continuation = function(aReturnedValue) {
-			done = true;
-			returnedValue = aReturnedValue;
-		};
-
-	var timer = Cc['@mozilla.org/timer;1']
-					.createInstance(Ci.nsITimer);
-	timer.init(function() {
-		aAsyncTask(continuation);
-	}, 0, Ci.nsITimer.TYPE_ONE_SHOT);
-
-	var thread = Cc['@mozilla.org/thread-manager;1']
-					.getService(Ci.nsIThreadManager)
-					.currentThread;
-	while (!done) {
-		thread.processNextEvent(true);
-	}
-	return returnedValue;
-}
-
 function _readFrom(aURISpec, aEncoding)
 {
 	const Cc = Components.classes;
@@ -327,9 +313,6 @@ function _createNamespace(aURISpec, aRoot)
 			/* utility to read contents of a text file */
 			read : function(aURISpec, aEncoding, aBaseURI) {
 				return _readFrom(this.resolve(aURISpec, aBaseURI), aEncoding);
-			},
-			doAndWait : function(aAsyncTask) {
-				return doAndWait(aAsyncTask);
 			},
 			exports : {}
 		});
