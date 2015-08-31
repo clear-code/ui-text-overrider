@@ -11,6 +11,8 @@ var STATE_HANDLED      = 0;
 var STATE_ONLOAD_FIRED = 1;
 var STATE_DELAYED      = 2;
 
+prefs.setPref(domain + 'debug', false);
+
 function overrideUIText(aWindow, aBaseKey, aState) {
   var selector = prefs.getPref(aBaseKey);
   if (!selector)
@@ -74,9 +76,11 @@ function overrideUIText(aWindow, aBaseKey, aState) {
         attributes.push(attribute + '=' + value);
       });
     });
-    console.log('[uitextoverrider] ' + targets.length + ' targets found: ' + selector +
-                ' => ' + attributes.join(', ') +
-                ' (' + aWindow.location.href +  ')');
+    if (prefs.getPref(domain + 'debug')) {
+      console.log('[uitextoverrider] ' + targets.length + ' targets found: ' + selector +
+                  ' => ' + attributes.join(', ') +
+                  ' (' + aWindow.location.href +  ')');
+    }
   } catch(error) {
     Cu.reportError(error);
   }
