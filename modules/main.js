@@ -54,7 +54,7 @@ function overrideUIText(aWindow, aBaseKey, aState) {
 
   try {
     var targets = aWindow.document.querySelectorAll(selector);
-    // Application.console.log(aState+' / '+selector+' => '+targets.length);
+    // console.log(aState+' / '+selector+' => '+targets.length);
     if (!targets.length) {
       Cu.reportError(new Error('[uitextoverrider] no target found: ' + selector +
                                  ' (' + aWindow.location.href +  ')'));
@@ -74,9 +74,9 @@ function overrideUIText(aWindow, aBaseKey, aState) {
         attributes.push(attribute + '=' + value);
       });
     });
-    Application.console.log('[uitextoverrider] ' + targets.length + ' targets found: ' + selector +
-                              ' => ' + attributes.join(', ') +
-                              ' (' + aWindow.location.href +  ')');
+    console.log('[uitextoverrider] ' + targets.length + ' targets found: ' + selector +
+                ' => ' + attributes.join(', ') +
+                ' (' + aWindow.location.href +  ')');
   } catch(error) {
     Cu.reportError(error);
   }
