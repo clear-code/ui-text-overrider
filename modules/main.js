@@ -25,6 +25,7 @@ function overrideUIText(aWindow, aBaseKey, aState) {
   }
 
   if (aWindow.location.href == 'about:blank' && aState == STATE_HANDLED) {
+    // When the chrome window is not loaded yet, we have to do following processes after loaded. 
     aWindow.addEventListener('load', function onLoad(aEvent) {
       aWindow.removeEventListener('load', onLoad, false);
       aWindow.addEventListener('MozAfterPaint', function onMozAfterPaint(aEvent) {
