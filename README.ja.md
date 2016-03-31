@@ -1,6 +1,8 @@
 ui-text-overrider
 =================
 
+ダウンロードリンク：https://addons.mozilla.org/firefox/addon/ui-text-overrider/
+
 UI要素のラベル、ツールチップテキストなどの文字列を変更する機能を提供します。
 
 以下のような設定を定義すると、このアドオンは自動的に新しいラベルやツールチップテキストなどを反映します。
