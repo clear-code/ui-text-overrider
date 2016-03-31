@@ -1,6 +1,8 @@
 ui-text-overrider
 =================
 
+Download Link: https://addons.mozilla.org/firefox/addon/ui-text-overrider/
+
 Provides ability to override UI elements' label, tooltip text, etc.
 
 If you define some preferences like following, this addon automatically apply new labels, tooltip texts, and so on.
