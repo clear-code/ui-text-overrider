@@ -1,5 +1,27 @@
+// Following variables must be predefined.
+//
+// var killedItems = [];
+// var killedItemsWithDelay = [];
+// var hiddenItemsWithDelay = [];
+
 {// UI Text Overrider, for Firefox 52/Thunderbird 52 and later
   let domain = 'extensions.uitextoverrider@clear-code.com.';
+
+  function setKillItemRule(aIdentifier, aSelector, aDelayed, aDisableCommand) {
+    lockPref(domain + aIdentifier, aSelector);
+    lockPref(domain + aIdentifier + ".disabled", "true");
+    lockPref(domain + aIdentifier + ".hidden", "true");
+    lockPref(domain + aIdentifier + ".readonly", "true");
+    if (aDisableCommand) {
+      lockPref(domain + aIdentifier + ".command", "");
+      lockPref(domain + aIdentifier + ".oncommand", "");
+    }
+    lockPref(domain + aIdentifier + ".always-hidden", "true");
+    lockPref(domain + aIdentifier + ".delayed", aDelayed == true);
+  }
+  setKillItemRule("killedItems",          killedItems.join(","),          false, true);
+  setKillItemRule("killedItemsWithDelay", killedItemsWithDelay.join(","), true,  true);
+  setKillItemRule("hiddenItemsWithDelay", hiddenItemsWithDelay.join(","), true,  false);
 
   let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
   let { Services } = Cu.import('resource://gre/modules/Services.jsm', {});
