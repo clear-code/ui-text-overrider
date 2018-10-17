@@ -59,8 +59,9 @@ function overrideUIText(aWindow, aBaseKey, aState) {
     var targets = aWindow.document.querySelectorAll(selector);
     // console.log(aState+' / '+selector+' => '+targets.length);
     if (!targets.length) {
-      Cu.reportError(new Error('[uitextoverrider] no target found: ' + selector +
-                                 ' (' + aWindow.location.href +  ')'));
+      if (prefs.getPref(domain + 'debug'))
+        Cu.reportError(new Error('[uitextoverrider] no target found: ' + selector +
+                                   ' (' + aWindow.location.href +  ')'));
       return;
     }
 
