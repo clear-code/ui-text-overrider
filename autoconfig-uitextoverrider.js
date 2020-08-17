@@ -105,10 +105,10 @@
           return;
 
         var value = getPref(aKey);
-        Array.forEach(targets, aTarget => {
-          aTarget.setAttribute(attribute, value);
+        for (const target of targets) {
+          target.setAttribute(attribute, value);
           attributes.push(attribute + '=' + value);
-        });
+        }
       });
       if (getPref(domain + 'debug')) {
         Services.console.logStringMessage(`[uitextoverrider] ${targets.length} targets found: ${selector} => ${attributes.join(', ')} (${aWindow.location.href})`);
@@ -133,13 +133,12 @@
     observe(aSubject, aTopic, aData) {
       if (aTopic == 'domwindowopened' &&
           !aSubject
-            .QueryInterface(Ci.nsIInterfaceRequestor)
             .getInterface(Ci.nsIWebNavigation)
             .QueryInterface(Ci.nsIDocShell)
             .QueryInterface(Ci.nsIDocShellTreeNode || Ci.nsIDocShellTreeItem) // nsIDocShellTreeNode is merged to nsIDocShellTreeItem by https://bugzilla.mozilla.org/show_bug.cgi?id=331376
             .QueryInterface(Ci.nsIDocShellTreeItem)
             .parent)
-        aSubject.QueryInterface(Ci.nsIDOMWindow).addEventListener('DOMContentLoaded', aEvent => {
+        aSubject.getInterface(Ci.nsIDOMWindow).addEventListener('DOMContentLoaded', aEvent => {
           handleWindow(aEvent.target.defaultView);
         }, { once: true });
     }
